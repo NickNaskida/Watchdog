@@ -1,35 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+
+import Alert from "./components/Alert/Alert";
+
+type Message = {
+  text: string;
+  category: "debug" | "info" | "warning" | "error";
+};
+
+function getRandomElement(array) {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [alertArray, setAlertArray] = useState<Message[]>([]);
+
+  const addMessage = (message: Message) => {
+    setAlertArray([...alertArray, message]);
+  };
+
+  const buttonHandler = () => {
+    const categories = ["debug", "info", "warning", "error"];
+    const category = getRandomElement(categories);
+    addMessage({
+      text: `New ${category} alert #${(Math.random() + 1)
+        .toString(36)
+        .substring(3)}`,
+      category: category,
+    });
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1 className="text-5xl font-semibold">Alerts Dashboard</h1>
+      <div className="w-full my-8 h-96 overflow-y-scroll">
+        {alertArray
+          .slice(0)
+          .reverse()
+          .map((message, index) => {
+            return (
+              <Alert
+                key={index}
+                message={message.text}
+                category={message.category}
+              />
+            );
+          })}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button
+        className="btn btn-wide btn-primary"
+        onClick={() => buttonHandler()}
+      >
+        Add Alert
+      </button>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

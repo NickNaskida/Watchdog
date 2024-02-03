@@ -1,4 +1,4 @@
-# Watchdog
+# Watchdog 🐕
 
 ### Overview
 Watchdog is an open-source project that leverages the power of Go and Kafka to build a robust and scalable alert system.
