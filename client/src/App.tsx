@@ -76,9 +76,8 @@ function App() {
         <span className="font-bold">error:</span>{" "}
         {alertArray.filter((alert) => alert.category === "error").length}
       </p>
-      <div className="h-96 flex column justify-center items-center m-0 text-center">
+      <div className="h-64 flex column justify-center items-center m-0 text-center">
         <Pie
-          width={400}
           data={{
             labels: ["debug", "info", "warning", "error"],
             datasets: [
