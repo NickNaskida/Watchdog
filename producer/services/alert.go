@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"time"
@@ -13,6 +14,14 @@ type Alert struct {
 	Id       int
 	Category string
 	Message  string
+}
+
+func (a Alert) ToJSON() (string, error) {
+	jsonData, err := json.Marshal(a)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonData), nil
 }
 
 // alertCategory is a struct that holds the different alert categories.
@@ -46,7 +55,7 @@ var fakeMessages = map[string][]string{
 		"Service [%s] is running out of disk space.",
 		"Service [%s] is running out of memory.",
 		"Service [%s] is running out of CPU.",
-		"80% of the disk space used for service [%s].",
+		"80%% of the disk space used for service [%s].",
 		"Memory usage for service [%s] at 90%%.",
 		"Total storage capacity for service [%s] at 95%%.",
 		"Unauthorized access attempt to service [%s].",
@@ -67,7 +76,7 @@ var fakeMessages = map[string][]string{
 	},
 }
 
-func NewAlert() *Alert {
+func NewAlert() Alert {
 	rand.NewSource(time.Now().UnixNano())
 
 	serviceCharId := string(letters[rand.Intn(len(letters)-1)])
@@ -82,5 +91,5 @@ func NewAlert() *Alert {
 	alert.Category = category
 	alert.Message = fmt.Sprintf(message, serviceIdentifier)
 
-	return alert
+	return *alert
 }
