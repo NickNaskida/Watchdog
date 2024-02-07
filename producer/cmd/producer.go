@@ -8,7 +8,7 @@ import (
 
 const kafkaTopic string = "alerts"
 
-var kafkaBrokers []string = []string{"localhost:9092"}
+var kafkaBrokers []string = []string{"kafka:9092"}
 
 func SetupProducer() (sarama.SyncProducer, error) {
 	producer, err := sarama.NewSyncProducer(kafkaBrokers, nil)
