@@ -39,10 +39,6 @@ func SendKafkaMessage(producer sarama.SyncProducer, alertMessage services.Alert)
 }
 
 func main() {
-	fmt.Println("Starting the alert producer ...")
-
-	var alertCounter int
-
 	// Create a new Kafka producer
 	producer, err := SetupProducer()
 	if err != nil {
@@ -50,6 +46,9 @@ func main() {
 	}
 	defer producer.Close()
 
+	fmt.Printf("Kafka producer started publishing to topic: %s\n", configs.KafkaTopic)
+
+	var alertCounter int
 	for {
 		randomAlert := services.NewAlert()
 		fmt.Println("Alert Message: ", randomAlert.Message)

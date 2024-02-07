@@ -13,7 +13,7 @@ services:
   consumer:
     build:
       context: ./backend
-      dockerfile: backend/build/docker/consumer.Dockerfile
+      dockerfile: ./build/docker/consumer.Dockerfile
     container_name: consumer
     depends_on:
       - zookeeper
