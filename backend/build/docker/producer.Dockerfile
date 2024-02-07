@@ -4,11 +4,13 @@ MAINTAINER "Nikoloz Naskidashvili"
 
 WORKDIR /app
 
+COPY go.mod go.sum ./
+
+RUN go mod download
+
 COPY . .
 
-RUN go get
-
-RUN go build -o producer
+RUN go build -o producer cmd/producer.go
 
 FROM alpine:latest
 

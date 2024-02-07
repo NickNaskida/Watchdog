@@ -3,9 +3,18 @@ version: "3.9"
 services:
   producer:
     build:
-      context: ./producer
-      dockerfile: Dockerfile
+      context: ./backend
+      dockerfile: ./build/docker/producer.Dockerfile
     container_name: producer
+    depends_on:
+      - zookeeper
+      - kafka
+
+  consumer:
+    build:
+      context: ./backend
+      dockerfile: backend/build/docker/consumer.Dockerfile
+    container_name: consumer
     depends_on:
       - zookeeper
       - kafka
