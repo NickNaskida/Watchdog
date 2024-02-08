@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/IBM/sarama"
 	"github.com/NickNaskida/Watchdog/backend/configs"
+	"github.com/NickNaskida/Watchdog/backend/pkg/models"
 	"github.com/NickNaskida/Watchdog/backend/services"
 	"log"
 	"math/rand"
@@ -19,8 +21,8 @@ func SetupProducer() (sarama.SyncProducer, error) {
 	return producer, err
 }
 
-func SendKafkaMessage(producer sarama.SyncProducer, alertMessage services.Alert) {
-	alertMessageJSON, err := alertMessage.ToJSON()
+func SendKafkaMessage(producer sarama.SyncProducer, alertMessage models.Alert) {
+	alertMessageJSON, err := json.Marshal(alertMessage)
 	if err != nil {
 		log.Fatal("Error marshalling alert message to JSON: ", err)
 	}

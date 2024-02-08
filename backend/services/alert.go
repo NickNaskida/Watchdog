@@ -1,28 +1,13 @@
 package services
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/NickNaskida/Watchdog/backend/pkg/models"
 	"math/rand"
 	"time"
 )
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-// Alert is a struct that holds the individual alert information.
-type Alert struct {
-	Id       int
-	Category string
-	Message  string
-}
-
-func (a Alert) ToJSON() (string, error) {
-	jsonData, err := json.Marshal(a)
-	if err != nil {
-		return "", err
-	}
-	return string(jsonData), nil
-}
 
 // alertCategory is a struct that holds the different alert categories.
 var alertCategory = []string{"debug", "info", "warning", "error"}
@@ -76,7 +61,7 @@ var fakeMessages = map[string][]string{
 	},
 }
 
-func NewAlert() Alert {
+func NewAlert() models.Alert {
 	rand.NewSource(time.Now().UnixNano())
 
 	serviceCharId := string(letters[rand.Intn(len(letters)-1)])
@@ -86,10 +71,10 @@ func NewAlert() Alert {
 	category := alertCategory[rand.Intn(len(alertCategory))]
 	message := fakeMessages[category][rand.Intn(len(fakeMessages[category]))]
 
-	alert := new(Alert)
-	alert.Id = rand.Intn(1000)
-	alert.Category = category
-	alert.Message = fmt.Sprintf(message, serviceIdentifier)
-
-	return *alert
+	alert := models.Alert{
+		Id:       rand.Intn(1000),
+		Category: category,
+		Message:  fmt.Sprintf(message, serviceIdentifier),
+	}
+	return alert
 }

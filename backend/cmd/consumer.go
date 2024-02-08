@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/IBM/sarama"
 	"github.com/NickNaskida/Watchdog/backend/configs"
+	"github.com/NickNaskida/Watchdog/backend/pkg/models"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -16,13 +18,12 @@ func (*Consumer) Cleanup(sarama.ConsumerGroupSession) error { return nil }
 
 func (consumer *Consumer) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for msg := range claim.Messages() {
-		log.Printf("received message: %s", string(msg.Value))
-		//var notification models.Notification
-		//err := json.Unmarshal(msg.Value, &notification)
-		//if err != nil {
-		//	log.Printf("failed to unmarshal notification: %v", err)
-		//	continue
-		//}
+		var alert models.Alert
+		err := json.Unmarshal(msg.Value, &alert)
+		if err != nil {
+			log.Printf("failed to unmarshal notification: %v", err)
+			continue
+		}
 
 		sess.MarkMessage(msg, "")
 	}
