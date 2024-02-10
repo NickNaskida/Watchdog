@@ -7,16 +7,19 @@ import (
 	"github.com/IBM/sarama"
 	"github.com/NickNaskida/Watchdog/backend/configs"
 	"github.com/NickNaskida/Watchdog/backend/pkg/models"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"log"
+	"net/http"
 )
 
 type Consumer struct{}
 
-func (*Consumer) Setup(sarama.ConsumerGroupSession) error   { return nil }
+func (*Consumer) Setup(sarama.ConsumerGroupSession) error { return nil }
+
 func (*Consumer) Cleanup(sarama.ConsumerGroupSession) error { return nil }
 
 func (consumer *Consumer) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	var alertCount int
 	for msg := range claim.Messages() {
 		var alert models.Alert
 		err := json.Unmarshal(msg.Value, &alert)
@@ -25,6 +28,10 @@ func (consumer *Consumer) ConsumeClaim(sess sarama.ConsumerGroupSession, claim s
 			continue
 		}
 
+		broadcastMessage(alert)
+
+		alertCount++
+		fmt.Println("[*] Received alert:", alert.Message, "Total received: ", alertCount)
 		sess.MarkMessage(msg, "")
 	}
 	return nil
@@ -61,17 +68,45 @@ func setupConsumerGroup(ctx context.Context) {
 	}
 }
 
+var upgrader = websocket.Upgrader{}
+var clients = make(map[*websocket.Conn]bool)
+
+func Upgrade(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("%s, error while upgrading websocket connection\n", err.Error())
+		return
+	}
+	clients[conn] = true
+
+	fmt.Println("Websocket connection established")
+
+	defer conn.Close()
+
+	for {
+	}
+}
+
+func broadcastMessage(message models.Alert) {
+	for conn := range clients {
+		err := conn.WriteJSON(message)
+		if err != nil {
+			log.Printf("error while broadcasting message: %v", err)
+			clients[conn] = false
+			conn.Close()
+		}
+	}
+}
+
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go setupConsumerGroup(ctx)
 	defer cancel()
-
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
-
 	fmt.Printf("Kafka consumer (group: %s) started ...\n", configs.KafkaConsumerGroup)
 
-	if err := router.Run(configs.KafkaConsumerPort); err != nil {
+	http.HandleFunc("/ws", Upgrade)
+
+	if err := http.ListenAndServe(configs.KafkaConsumerPort, nil); err != nil {
 		log.Printf("failed to run the server: %v", err)
 	}
 }

@@ -53,14 +53,14 @@ func main() {
 	var alertCounter int
 	for {
 		randomAlert := services.NewAlert()
-		fmt.Println("Alert Message: ", randomAlert.Message)
+		fmt.Println("[*] Alert Message: ", randomAlert.Message)
 
 		// Send the alert message to the Kafka topic
 		SendKafkaMessage(producer, randomAlert)
 
 		// Display total alert events produced
 		alertCounter++
-		fmt.Println("Total alert events produced: ", alertCounter)
+		fmt.Println("[*] Total alert events produced: ", alertCounter)
 
 		// Sleep for a random number of seconds
 		sleepSeconds := rand.Intn(5)
