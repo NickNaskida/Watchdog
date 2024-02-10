@@ -25,9 +25,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 function App() {
   const [alertHistory, setAlertHistory] = useState<Alert[]>([]);
 
-  const [socketUrl, setSocketUrl] = useState("ws://localhost:8080/alerts");
+  const [socketUrl] = useState("ws://localhost:8080/alerts");
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const {lastMessage, readyState } = useWebSocket(socketUrl);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
@@ -112,9 +112,9 @@ function App() {
         />
       </div>
       <div className="text-xs flex flex-col items-center w-full h-48 overflow-auto my-8">
-        {alertHistory.reverse().map((alert) => (
+        {alertHistory.reverse().map((alert, index: number) => (
           <div
-            key={alert.id}
+            key={index}
             className="flex flex-row items-center border-t gap-2 w-96 border-t-slate-200 py-2"
           >
             <span className={`w-2 h-2 p-0 ${AlertType[alert.category]}`}></span>

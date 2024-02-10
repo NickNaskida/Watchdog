@@ -84,7 +84,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	}
 	clients[conn] = true
 
-	fmt.Println("Websocket connection established")
+	fmt.Println("Websocket connection established: ", conn.RemoteAddr().String())
 
 	defer conn.Close()
 
@@ -97,7 +97,7 @@ func broadcastMessage(message models.Alert) {
 		err := conn.WriteJSON(message)
 		if err != nil {
 			log.Printf("error while broadcasting message: %v", err)
-			clients[conn] = false
+			delete(clients, conn)
 			conn.Close()
 		}
 	}
