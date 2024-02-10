@@ -3,11 +3,19 @@
 ### Overview
 Watchdog is an open-source project that leverages the power of Go and Kafka to build a robust and scalable alert system.
 
+### Demo
+<img src="demo.gif" alt="demo video" />
+
 ### Getting Started
 1. Clone the repository
     ```bash
     git clone https://github.com/NickNaskida/Watchdog.git
     ```
+
+2. Install docker (if you don't have it already)
+    - [Docker](https://docs.docker.com/get-docker/)
+
+TODO: Add instructions for running the project
 
 ### Contributing
 
