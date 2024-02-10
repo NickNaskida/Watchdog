@@ -84,7 +84,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	}
 	clients[conn] = true
 
-	fmt.Println("Websocket connection established: ", conn.RemoteAddr().String())
+	fmt.Printf("Websocket connection established: %s", conn.RemoteAddr().String())
 
 	defer conn.Close()
 
