@@ -68,7 +68,12 @@ func setupConsumerGroup(ctx context.Context) {
 	}
 }
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{
+	// Allow all origins
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 var clients = make(map[*websocket.Conn]bool)
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +109,7 @@ func main() {
 	defer cancel()
 	fmt.Printf("Kafka consumer (group: %s) started ...\n", configs.KafkaConsumerGroup)
 
-	http.HandleFunc("/ws", Upgrade)
+	http.HandleFunc("/alerts", Upgrade)
 
 	if err := http.ListenAndServe(configs.KafkaConsumerPort, nil); err != nil {
 		log.Printf("failed to run the server: %v", err)
