@@ -15,7 +15,13 @@ Watchdog is an open-source project that leverages the power of Go and Kafka to b
 2. Install docker (if you don't have it already)
     - [Docker](https://docs.docker.com/get-docker/)
 
-TODO: Add instructions for running the project
+
+3. Run the following command to start the project
+    ```bash
+    docker-compose up --build
+    ```
+
+4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 
 ### Contributing
 
