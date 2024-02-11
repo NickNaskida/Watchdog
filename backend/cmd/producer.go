@@ -63,7 +63,7 @@ func main() {
 		fmt.Println("[*] Total alert events produced: ", alertCounter)
 
 		// Sleep for a random number of seconds
-		sleepSeconds := rand.Intn(5)
+		sleepSeconds := rand.Intn(4) + 1
 		time.Sleep(time.Duration(sleepSeconds) * time.Second)
 	}
 }
